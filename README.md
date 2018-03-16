@@ -1,4 +1,4 @@
-# OXO Game
+# OXO Game (Solidity)
 
 ### Author
 Sergii Mas <kirajax@gmail.com>
