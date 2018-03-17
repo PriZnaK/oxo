@@ -73,10 +73,13 @@ contract('OXO Game', function (accounts) {
     await asserts.throws(oxoGame.cancelGame.call(0, {from: Player1}));
   });
 
-  // test with arbitrary data
+  // ------------------------------------------------------------------------
+  // Test with arbitrary data,
+  // should be 2 draws, 5 player1 wins and 1 player2 wins
+  // ------------------------------------------------------------------------
   let testData = require('./oxotestdata.json');
-  it('should be only 3 draw games in arbitrary data', async () => {
-    let drawsCount = 0;
+  it('should pas arbitrary data test', async () => {
+    let countDraws = 0; let countPlayer1 = 0; let countPlayer2 = 0;
     for (var i = 0; i < testData.length; i++) {
       var moves = testData[i];
       await oxoGame.createGame({from: Player1, value: 100});
@@ -90,11 +93,17 @@ contract('OXO Game', function (accounts) {
         }
       }
       let gameStatus = await oxoGame.gameStatus.call(i);
-      if (gameStatus[0] - 2 === 0 && gameStatus[2] === '0x0000000000000000000000000000000000000000') {
-        drawsCount++;
+      if (gameStatus[2] === '0x0000000000000000000000000000000000000000') {
+        countDraws++;
+      } else if (gameStatus[2] === Player1) {
+        countPlayer1++;
+      } else if (gameStatus[2] === Player2) {
+        countPlayer2++;
       }
     }
-    assert.equal(drawsCount, 3);
+    assert.equal(countDraws, 3, 'should be 3 draws');
+    assert.equal(countPlayer1, 4, 'player1 wins count should be 4');
+    assert.equal(countPlayer2, 1, 'player1 wins count should be 1');
   });
 
   it('more tests are comming...');
